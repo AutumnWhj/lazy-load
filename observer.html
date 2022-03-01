@@ -1,0 +1,53 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Lazyload-IntersectionObserver</title>
+  <style>
+    img {
+      display: block;
+      margin-bottom: 50px;
+      height: 400px;
+    }
+  </style>
+</head>
+
+<body>
+  <img src="" lazyload="true" data-src="assets/images/iu.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu1.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu2.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu3.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu1.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu2.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu3.jpeg" />
+  <script>
+    function lazyload() {
+      // IntersectionObserver的属性
+      const options = { threshold: 1.0 }
+      const intersectionObserver = new IntersectionObserver(function (entries, observer) {
+        entries.forEach(entry => {
+          console.log('entry', entry);
+          const el = entry.target
+          if (entry.isIntersecting) {
+            !function () {
+              var img = new Image()
+              img.src = el.dataset.src
+              img.onload = function () {
+                el.src = img.src
+              }
+            }()
+          }
+        });
+      }, options);
+      // start observing
+      var eles = document.querySelectorAll('img[data-src][lazyload]')
+      Array.prototype.forEach.call(eles, function (el, index) {
+        intersectionObserver.observe(el);
+      })
+    }
+    lazyload()
+  </script>
+</body>
+
+</html>

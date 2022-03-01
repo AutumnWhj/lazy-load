@@ -1,0 +1,65 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Lazyload-getBoundingClientRect</title>
+  <style>
+    img {
+      display: block;
+      margin-bottom: 50px;
+      height: 400px;
+    }
+  </style>
+</head>
+
+<body>
+  <img src="" lazyload="true" data-src="assets/images/iu.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu1.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu2.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu3.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu1.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu2.jpeg" />
+  <img src="" lazyload="true" data-src="assets/images/iu3.jpeg" />
+  <script>
+    function checkElement(element) {
+      const viewWidth = window.innerWidth || document.documentElement.clientWidth
+      const viewHeight = window.innerHeight || document.documentElement.clientHeight
+      const {
+        top,
+        right,
+        bottom,
+        left,
+      } = element.getBoundingClientRect() || {}
+      return (
+        top >= 0 &&
+        bottom <= viewHeight &&
+        left >= 0 &&
+        right <= viewWidth
+      )
+    }
+    function lazyload() {
+      var eles = document.querySelectorAll('img[data-src][lazyload]')
+      Array.prototype.forEach.call(eles, function (el, index) {
+        var rect
+        if (el.dataset.src === "")
+          return
+        if (checkElement(el)) {
+          !function () {
+            var img = new Image()
+            img.src = el.dataset.src
+            img.onload = function () {
+              el.src = img.src
+            }
+            el.removeAttribute("data-src")//移除属性，下次不再遍历
+            el.removeAttribute("lazyload")
+          }()
+        }
+      })
+    }
+    lazyload()//刚开始还没滚动屏幕时，要先触发一次函数，初始化首页的页面图片
+    document.addEventListener("scroll", lazyload)
+  </script>
+</body>
+
+</html>
